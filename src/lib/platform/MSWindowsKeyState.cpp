@@ -1196,8 +1196,48 @@ MSWindowsKeyState::getKeyMap(inputleap::KeyMap& keyMap)
 				}
 			}
 		}
+	// insert patch file
+    // Explicitly register the Windows IME mode keys.
+    //
+    // On Japanese 106/109-key layouts, MapVirtualKey(VK_IME_ON/OFF, 0)
+    // returns the synthetic scan codes used by keybd_event (typically
+    // 0xF2/0xF1), but MapVirtualKey(scanCode, 1) does not map those
+    // scan codes back to VK_IME_ON/VK_IME_OFF.  The normal key-map
+    // discovery above therefore misses kKeyKana/kKeyEisuToggle.
+    //
+    // Use those forward-mapped scan codes explicitly, while keeping
+    // the proper Input Leap KeyIDs and Windows virtual keys.
+    {
+        KeyButton button = static_cast<KeyButton>(
+            MapVirtualKey(VK_IME_ON, 0));
+        if (button != 0) {
+            item.m_id        = kKeyKana;
+            item.m_button    = button;
+            item.m_required  = 0;
+            item.m_sensitive = 0;
+            item.m_generates = 0;
+            item.m_dead      = false;
+            item.m_lock      = false;
+            item.m_client    = VK_IME_ON;
+            addKeyEntry(keyMap, item);
+        }
+    }
+    {
+        KeyButton button = static_cast<KeyButton>(
+            MapVirtualKey(VK_IME_OFF, 0));
+        if (button != 0) {
+            item.m_id        = kKeyEisuToggle;
+            item.m_button    = button;
+            item.m_required  = 0;
+            item.m_sensitive = 0;
+            item.m_generates = 0;
+            item.m_dead      = false;
+            item.m_lock      = false;
+            item.m_client    = VK_IME_OFF;
+            addKeyEntry(keyMap, item);
+        }
+    }
 	}
-
 	// restore keyboard layout
 	ActivateKeyboardLayout(activeLayout, 0);
 }
