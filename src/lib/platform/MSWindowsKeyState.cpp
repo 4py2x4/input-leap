@@ -1196,7 +1196,7 @@ MSWindowsKeyState::getKeyMap(inputleap::KeyMap& keyMap)
 				}
 			}
 		}
-	// insert patch file
+
     // Explicitly register the Windows IME mode keys.
     //
     // On Japanese 106/109-key layouts, MapVirtualKey(VK_IME_ON/OFF, 0)
