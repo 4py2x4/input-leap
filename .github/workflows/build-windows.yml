@@ -2,7 +2,9 @@ name: build-windows-patched
 
 on:
   workflow_dispatch:
-
+  push:
+    branches:
+      - ime-keys
 jobs:
   build:
     runs-on: windows-2022
