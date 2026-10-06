@@ -21,6 +21,14 @@ jobs:
         with:
           python-version: '3.11'
 
+      # ★このステップを追加して Python 3.14 を回避します
+      - name: Disable Python 3.14
+        shell: pwsh
+        run: |
+          Get-ChildItem "C:\hostedtoolcache\windows\Python" -Filter "3.14*" -ErrorAction SilentlyContinue | ForEach-Object {
+            Rename-Item $_.FullName "$($_.Name).bak"
+          }
+
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
@@ -29,7 +37,9 @@ jobs:
           target: 'desktop'
           arch: 'win64_msvc2019_64'
           modules: 'qttools'
-    
+
+
+
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
