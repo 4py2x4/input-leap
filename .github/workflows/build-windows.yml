@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - ime-keys
+
 jobs:
   build:
     runs-on: windows-2022
@@ -15,39 +16,19 @@ jobs:
         with:
           submodules: recursive
 
-      # ★以下のステップを追加
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      # ★このステップを追加して Python 3.14 を回避します
-      - name: Disable Python 3.14
+      - name: Install Qt
         shell: pwsh
         run: |
-          Get-ChildItem "C:\hostedtoolcache\windows\Python" -Filter "3.14*" -ErrorAction SilentlyContinue | ForEach-Object {
-            Rename-Item $_.FullName "$($_.Name).bak"
-          }
-
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: '6.7.3'
-          host: 'windows'
-          target: 'desktop'
-          arch: 'win64_msvc2019_64'
-          modules: 'qttools'
-
-
-
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: '6.7.3'
-          host: 'windows'
-          target: 'desktop'
-          arch: 'win64_msvc2019_64'
-          modules: 'qttools'
+          python -m pip install --upgrade pip
+          pip install aqtinstall
+          python -m aqt install-qt windows desktop 6.7.3 win64_msvc2019_64 -m qttools --outputdir C:\Qt
+          echo "Qt6_DIR=C:\Qt\6.7.3\msvc2019_64" >> $env:GITHUB_ENV
+          echo "C:\Qt\6.7.3\msvc2019_64\bin" >> $env:GITHUB_PATH
 
       - name: Install OpenSSL
         run: |
@@ -82,12 +63,12 @@ jobs:
       - name: Deploy Qt DLLs
         shell: pwsh
         run: |
-          $qtBin = Join-Path $env:Qt6_DIR 'bin'
-          $deploy = Join-Path $qtBin 'windeployqt.exe'
+          $qtBin = Join-Path$env:Qt6_DIR 'bin'
+          $deploy = Join-Path$qtBin 'windeployqt.exe'
 
           Get-ChildItem dist -Filter *.exe |
             ForEach-Object {
-              & $deploy --release $_.FullName
+              & $deploy --release$_.FullName
             }
 
       - name: Upload artifact
