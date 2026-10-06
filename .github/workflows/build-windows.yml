@@ -39,7 +39,7 @@ jobs:
             "C:\Program Files\OpenSSL",
             "C:\tools\openssl"
           )
-          foreach ($p in$possiblePaths) {
+          foreach ($p in $possiblePaths) {
             if (Test-Path $p) {
               echo "OPENSSL_ROOT_DIR=$p" >> $env:GITHUB_ENV
               break
