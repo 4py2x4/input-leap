@@ -85,7 +85,7 @@ jobs:
       - name: Deploy Qt DLLs
         shell: pwsh
         run: |
-          $qtBin = Join-Path$env:Qt6_DIR 'bin'
+          $qtBin = Join-Path $env:Qt6_DIR 'bin'
           $deploy = Join-Path$qtBin 'windeployqt.exe'
 
           Get-ChildItem dist -Filter *.exe |
