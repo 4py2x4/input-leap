@@ -90,7 +90,7 @@ jobs:
 
           Get-ChildItem dist -Filter *.exe |
             ForEach-Object {
-              & $deploy --release$_.FullName
+              & $deploy --release "$($_.FullName)"
             }
 
       - name: Upload artifact
