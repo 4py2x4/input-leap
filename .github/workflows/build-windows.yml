@@ -86,7 +86,7 @@ jobs:
         shell: pwsh
         run: |
           $qtBin = Join-Path $env:Qt6_DIR 'bin'
-          $deploy = Join-Path$qtBin 'windeployqt.exe'
+          $deploy = Join-Path $qtBin 'windeployqt.exe'
 
           Get-ChildItem dist -Filter *.exe |
             ForEach-Object {
