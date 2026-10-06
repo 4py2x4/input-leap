@@ -31,8 +31,20 @@ jobs:
           echo "C:\Qt\6.7.3\msvc2019_64\bin" >> $env:GITHUB_PATH
 
       - name: Install OpenSSL
+        shell: pwsh
         run: |
           choco install openssl -y
+          $possiblePaths = @(
+            "C:\Program Files\OpenSSL-Win64",
+            "C:\Program Files\OpenSSL",
+            "C:\tools\openssl"
+          )
+          foreach ($p in $possiblePaths) {
+            if (Test-Path $p) {
+              echo "OPENSSL_ROOT_DIR=$p" >> $env:GITHUB_ENV
+              break
+            }
+          }
 
       - name: Configure
         shell: pwsh
@@ -42,8 +54,7 @@ jobs:
             -A x64 `
             -DINPUTLEAP_BUILD_GUI=ON `
             -DINPUTLEAP_BUILD_TESTS=OFF `
-            -DQT_DEFAULT_MAJOR_VERSION=6 `
-            -DOPENSSL_ROOT_DIR="C:\Program Files\OpenSSL-Win64"
+            -DQT_DEFAULT_MAJOR_VERSION=6
 
       - name: Build
         run: |
