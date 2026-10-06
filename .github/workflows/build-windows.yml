@@ -87,11 +87,8 @@ jobs:
         run: |
           $qtBin = Join-Path $env:Qt6_DIR 'bin'
           $deploy = Join-Path $qtBin 'windeployqt.exe'
-
-          Get-ChildItem dist -Filter *.exe |
-            ForEach-Object {
-              & $deploy --release "$($_.FullName)"
-            }
+          # input-leap.exe のみに限定して実行
+          & $deploy --release "dist/input-leap.exe"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
