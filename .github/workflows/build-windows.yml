@@ -15,6 +15,21 @@ jobs:
         with:
           submodules: recursive
 
+      # ★以下のステップを追加
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.3'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          modules: 'qttools'
+	    
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
