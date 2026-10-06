@@ -39,12 +39,22 @@ jobs:
             "C:\Program Files\OpenSSL",
             "C:\tools\openssl"
           )
-          foreach ($p in $possiblePaths) {
+          foreach ($p in$possiblePaths) {
             if (Test-Path $p) {
               echo "OPENSSL_ROOT_DIR=$p" >> $env:GITHUB_ENV
               break
             }
           }
+
+      - name: Install Bonjour SDK
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force deps | Out-Null
+          Invoke-WebRequest 'https://github.com/nelsonjchen/mDNSResponder/releases/download/v2019.05.08.1/x64_RelWithDebInfo.zip' -OutFile 'deps\BonjourSDKLike.zip'
+          Expand-Archive deps\BonjourSDKLike.zip -DestinationPath deps\BonjourSDKLike
+          $bonjourPath = Join-Path (Get-Location).Path "deps\BonjourSDKLike"
+          echo "BONJOUR_SDK_HOME=$bonjourPath" >> $env:GITHUB_ENV
+          echo "DNSSD_LIB=$bonjourPath\Lib\x64\dnssd.lib" >> $env:GITHUB_ENV
 
       - name: Configure
         shell: pwsh
@@ -54,7 +64,8 @@ jobs:
             -A x64 `
             -DINPUTLEAP_BUILD_GUI=ON `
             -DINPUTLEAP_BUILD_TESTS=OFF `
-            -DQT_DEFAULT_MAJOR_VERSION=6
+            -DQT_DEFAULT_MAJOR_VERSION=6 `
+            -DDNSSD_LIB="$env:DNSSD_LIB"
 
       - name: Build
         run: |
